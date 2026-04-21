@@ -1,8 +1,5 @@
 """Integration tests for activity endpoints using AAA pattern."""
 
-import pytest
-
-
 class TestSignupAndRemovalFlow:
     """Integration tests combining multiple endpoints."""
 
