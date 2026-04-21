@@ -161,6 +161,12 @@ document.addEventListener("DOMContentLoaded", () => {
     const lastFocusable = focusableElements[focusableElements.length - 1];
     const isFocusOutsideModal = !confirmModal.contains(document.activeElement);
 
+    if (firstFocusable === lastFocusable) {
+      event.preventDefault();
+      firstFocusable.focus();
+      return;
+    }
+
     if (event.shiftKey) {
       if (document.activeElement === firstFocusable || isFocusOutsideModal) {
         event.preventDefault();
