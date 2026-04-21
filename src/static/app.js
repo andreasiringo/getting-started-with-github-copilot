@@ -96,9 +96,20 @@ document.addEventListener("DOMContentLoaded", () => {
   const modalCancel = document.getElementById("modal-cancel");
   const modalConfirm = document.getElementById("modal-confirm");
   let pendingRemoval = null;
+  let lastFocusedElement = null;
+
+  function isModalOpen() {
+    return !confirmModal.classList.contains("hidden");
+  }
+
+  function getModalFocusableElements() {
+    const focusableSelector = 'button, [href], input, select, textarea, [tabindex]:not([tabindex="-1"])';
+    return Array.from(confirmModal.querySelectorAll(focusableSelector)).filter((element) => !element.disabled);
+  }
 
   function openConfirmModal(activity, email) {
     pendingRemoval = { activity, email };
+    lastFocusedElement = document.activeElement;
     modalBody.textContent = `Remove "${email}" from "${activity}"?`;
     confirmModal.classList.remove("hidden");
     modalConfirm.focus();
@@ -107,6 +118,10 @@ document.addEventListener("DOMContentLoaded", () => {
   function closeConfirmModal() {
     confirmModal.classList.add("hidden");
     pendingRemoval = null;
+    if (lastFocusedElement && document.contains(lastFocusedElement)) {
+      lastFocusedElement.focus();
+    }
+    lastFocusedElement = null;
   }
 
   modalCancel.addEventListener("click", closeConfirmModal);
@@ -116,7 +131,37 @@ document.addEventListener("DOMContentLoaded", () => {
   });
 
   document.addEventListener("keydown", (event) => {
-    if (event.key === "Escape") closeConfirmModal();
+    if (!isModalOpen()) return;
+
+    if (event.key === "Escape") {
+      event.preventDefault();
+      closeConfirmModal();
+      return;
+    }
+
+    if (event.key !== "Tab") return;
+
+    const focusableElements = getModalFocusableElements();
+    if (focusableElements.length === 0) {
+      event.preventDefault();
+      return;
+    }
+
+    const firstFocusable = focusableElements[0];
+    const lastFocusable = focusableElements[focusableElements.length - 1];
+
+    if (event.shiftKey) {
+      if (document.activeElement === firstFocusable || !confirmModal.contains(document.activeElement)) {
+        event.preventDefault();
+        lastFocusable.focus();
+      }
+      return;
+    }
+
+    if (document.activeElement === lastFocusable || !confirmModal.contains(document.activeElement)) {
+      event.preventDefault();
+      firstFocusable.focus();
+    }
   });
 
   modalConfirm.addEventListener("click", async () => {
