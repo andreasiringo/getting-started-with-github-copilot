@@ -28,7 +28,7 @@ def client(mock_activities):
     yield test_client
     
     # Restore original activities after the test
-    if original_activities:
+    if original_activities is not None:
         src.app.activities = original_activities
 
 
