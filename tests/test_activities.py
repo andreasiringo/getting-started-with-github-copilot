@@ -1,7 +1,6 @@
 """Unit tests for activity endpoints using AAA pattern (Arrange-Act-Assert)."""
 
 import pytest
-from fastapi.testclient import TestClient
 
 
 class TestRootEndpoint:
