@@ -15,23 +15,24 @@ def mock_activities():
 @pytest.fixture
 def client(mock_activities):
     """Create a TestClient with mocked activities."""
-    # Store the original activities
-    original_activities = app.__dict__['activities'] if 'activities' in app.__dict__ else None
-    
-    # Override the activities in the app module
     import src.app
+
+    # Store the original module-level activities before overriding
+    original_activities = src.app.activities
+
+    # Override the activities in the app module
     src.app.activities = mock_activities
-    
+
     # Create the test client
     test_client = TestClient(app)
-    
+
     try:
         yield test_client
     finally:
         test_client.close()
-        
+
         # Restore original activities after the test
-        if original_activities:
+        if original_activities is not None:
             src.app.activities = original_activities
 
 
