@@ -1,8 +1,5 @@
 """Unit tests for activity endpoints using AAA pattern (Arrange-Act-Assert)."""
 
-import pytest
-
-
 class TestRootEndpoint:
     """Tests for GET / endpoint."""
 
