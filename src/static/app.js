@@ -107,6 +107,16 @@ document.addEventListener("DOMContentLoaded", () => {
     return Array.from(confirmModal.querySelectorAll(focusableSelector)).filter((element) => !element.disabled);
   }
 
+  function canReceiveFocus(element) {
+    return Boolean(
+      element
+      && document.contains(element)
+      && typeof element.focus === "function"
+      && !element.disabled
+      && element.getClientRects().length > 0
+    );
+  }
+
   function openConfirmModal(activity, email) {
     pendingRemoval = { activity, email };
     lastFocusedElement = document.activeElement;
@@ -118,7 +128,7 @@ document.addEventListener("DOMContentLoaded", () => {
   function closeConfirmModal() {
     confirmModal.classList.add("hidden");
     pendingRemoval = null;
-    if (lastFocusedElement && document.contains(lastFocusedElement)) {
+    if (canReceiveFocus(lastFocusedElement)) {
       lastFocusedElement.focus();
     }
     lastFocusedElement = null;
@@ -149,16 +159,17 @@ document.addEventListener("DOMContentLoaded", () => {
 
     const firstFocusable = focusableElements[0];
     const lastFocusable = focusableElements[focusableElements.length - 1];
+    const isFocusOutsideModal = !confirmModal.contains(document.activeElement);
 
     if (event.shiftKey) {
-      if (document.activeElement === firstFocusable || !confirmModal.contains(document.activeElement)) {
+      if (document.activeElement === firstFocusable || isFocusOutsideModal) {
         event.preventDefault();
         lastFocusable.focus();
       }
       return;
     }
 
-    if (document.activeElement === lastFocusable || !confirmModal.contains(document.activeElement)) {
+    if (document.activeElement === lastFocusable || isFocusOutsideModal) {
       event.preventDefault();
       firstFocusable.focus();
     }
