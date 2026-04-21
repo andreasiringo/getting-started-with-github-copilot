@@ -92,7 +92,7 @@ class TestSignupAndRemovalFlow:
         """
         Arrange: Tennis Club has max 16, initially 2 participants
         Act: signup students until full, then try to add one more
-        Assert: can add up to capacity, then 16th fails
+        Assert: can add up to capacity, then 17th signup fails
         """
         # Arrange
         activity_name = "Tennis Club"
