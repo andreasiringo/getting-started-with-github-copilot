@@ -25,11 +25,14 @@ def client(mock_activities):
     # Create the test client
     test_client = TestClient(app)
     
-    yield test_client
-    
-    # Restore original activities after the test
-    if original_activities is not None:
-        src.app.activities = original_activities
+    try:
+        yield test_client
+    finally:
+        test_client.close()
+        
+        # Restore original activities after the test
+        if original_activities:
+            src.app.activities = original_activities
 
 
 @pytest.fixture
