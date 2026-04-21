@@ -37,6 +37,9 @@ document.addEventListener("DOMContentLoaded", () => {
       Object.entries(activities).forEach(([name, details]) => {
         const activityCard = document.createElement("div");
         activityCard.className = "activity-card";
+        const escapedName = escapeHtml(name);
+        const escapedDescription = escapeHtml(details.description);
+        const escapedSchedule = escapeHtml(details.schedule);
 
         const spotsLeft = details.max_participants - details.participants.length;
 
@@ -61,9 +64,9 @@ document.addEventListener("DOMContentLoaded", () => {
           : `<li class="no-participants">No participants yet</li>`;
 
         activityCard.innerHTML = `
-          <h4>${name}</h4>
-          <p>${details.description}</p>
-          <p><strong>Schedule:</strong> ${details.schedule}</p>
+          <h4>${escapedName}</h4>
+          <p>${escapedDescription}</p>
+          <p><strong>Schedule:</strong> ${escapedSchedule}</p>
           <p><strong>Availability:</strong> <span class="spots-badge ${spotsLeft === 0 ? 'spots-full' : ''}"> ${spotsLeft} spot${spotsLeft !== 1 ? 's' : ''} left</span></p>
           <div class="participants-section">
             <button type="button" class="participants-toggle" aria-expanded="false">
